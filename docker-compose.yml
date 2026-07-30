@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: clinic_db
+    environment:
+      POSTGRES_USER: clinic_user
+      POSTGRES_PASSWORD: clinic_password
+      POSTGRES_DB: clinic_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  backend:
+    build: 
+      context: ./backend
+    container_name: clinic_backend
+    environment:
+      - FLASK_APP=run.py
+      - FLASK_ENV=production
+      - SECRET_KEY=your_production_secret_key_here
+      # Connects to the 'db' service defined above
+      - DATABASE_URL=postgresql://clinic_user:clinic_password@db:5432/clinic_db
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # This tells React where the API lives. 
+        # Since it runs in the user's browser, it points to localhost:5000
+        - VITE_API_BASE_URL=http://localhost:5000/api
+    container_name: clinic_frontend
+    ports:
+      - "3000:80" # Maps the host port 3000 to the container's Nginx port 80
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

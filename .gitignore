@@ -1,0 +1,13 @@
+# Python / Backend
+venv/
+__pycache__/
+*.pyc
+# .env
+
+# Database
+*.sqlite3
+postgres_data/
+
+# OS Files
+.DS_Store
+Thumbs.db
