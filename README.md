@@ -131,6 +131,7 @@ def book_appointment(patient_id: int, doctor_id: int, slot_time: str):
 ```
 
 [!NOTE]
+
     4) check above code part. its post request. post request cant get data as parameters like get request . eg:book_appointment(patient_id: int, doctor_id: int, slot_time: str) this way
 
     with fastapi only can get data with that body passing data , add within pydantic model. in that case that pydantic model class can include as function paraeters. for above case we can write
